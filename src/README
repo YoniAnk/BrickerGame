@@ -1,0 +1,141 @@
+yoniankri
+208089383
+
+=============================
+=      File description     =
+=============================
+
+-> src/brick_strategies/AnotherLifeStrategy.java - A type of collision strategy, this strategy create a
+falling heart (extra life) when the brick get break.
+
+-> src/brick_strategies/CameraStrategy.java - A type of collision strategy, this strategy turn on a camera
+when the brick get break.
+
+-> src/brick_strategies/CollisionStrategy.java - The Class that deal with the Event that the ball hit brick
+part of Bricker game
+
+-> src/brick_strategies/DoubleStrategy.java - A type of collision strategy, this strategy deal with double
+option of strategies when the brick get break every double strategy can end up with 3 power ups.
+
+-> src/brick_strategies/PaddleStrategy.java - A type of collision strategy, this strategy create an extra
+paddle in the middle of the screen when the brick get break.
+
+-> src/brick_strategies/PuckStrategy.java - A type of collision strategy, this strategy create extra balls
+when the brick get break.
+
+-> src/brick_strategies/Strategies.java - A enum class that contains all the strategies in the game.
+
+-> src/factories/CollisionStrategyFactory.java - A factory that creates a collision strategy for the bricks
+in the game.
+
+-> src/gameobjects/Ball.java - The class of the ball, part of Bricker game.
+
+-> src/gameobjects/Brick.java - The class of the Bricks, part of Bricker game.
+
+-> src/gameobjects/CollisionCounter.java - A class of game object that is responsible for turning off the
+camera (for camera strategy). it counts the hits of the ball and turn off the camera when needed.
+
+-> src/gameobjects/FallingHeart.java - A class of the falling heart (that is created with Another life
+collision strategy)
+
+-> src/gameobjects/GraphicLifeCounter.java - The class of the Graphic life counter, the images of the heart,
+part of Bricker game.
+
+-> src/gameobjects/NumericLifeCounter.java - The class of the Numeric life counter, the text of the lives,
+part of Bricker game.
+
+-> src/gameobjects/Paddle.java - The class of the paddle, part of Bricker game.
+
+-> src/gameobjects/SecondaryPaddle.java - The class that is responsible for the Secondary paddle that appear
+after the Paddle Collision strategy. this paddle is a type of the normal paddle ,but it disappears when it
+gets hit a certain amount of times.
+
+-> src/BrickerGameManager.java - The game Manager of the bricker game.
+
+
+=============================
+=          Design           =
+=============================
+
+I will explain about design decisions that I took (about new files).
+
+Brick - All brick will hold an instance of a collision strategy, this strategy will be responsible of what
+will happen to the brick when the ball touch it
+Inheritance hierarchy - GameObject -> Brick.
+
+CollisionStrategies - I chose that the normal collision strategy will be a class that other collisions
+strategies are inherits from it. All collisions strategy should break the brick so i chose to make an
+inheritance and to add more option to each specific collision strategy.
+Inheritance hierarchy - CollisionStrategy(Normal one) -> all other types of Collisions Strategies.
+
+CollisionStrategyFactory - I chose to create an independent class that is responsible for creating collisions
+strategies. With this design pattern there will be no class that depends on which strategies are available.
+This class will create a collision strategy when needed.
+
+CollisionCounter - I chose to create the CollisionCounter to be a game object type (to inheritance from
+GameObject) because there will be classes that will need a object of this type in them (to count things).
+This object doesn't depends on other classes so it can be an independent class.
+Inheritance hierarchy - GameObject -> CollisionCounter.
+
+FallingHeart - I chose to make the falling heart to be a game object (to inheritance from GameObject)
+because the falling heart is an independent object, it's a object in the game but it doesn't depends on any
+other objects
+Inheritance hierarchy - GameObject -> FallingHeart.
+
+SecondaryPaddle - I chose to make the SecondaryPaddle a type of the Paddle (to inheritance from Paddle)
+because the SecondaryPaddle is a type of the nirmal paddle but it has more functionality.
+In this case the functionality is to count how much hits it got.
+Inheritance hierarchy - GameObject -> Paddle -> SecondaryPaddle.
+
+=============================
+=  Implementation details   =
+=============================
+
+I'll explain the implementation details for specific implementations -
+
+CollisionStrategy as a class that other collisions strategies heirs from it -
+In this situation I also could create an interface or an abstract class, both options are not the best for
+this situation because - interface, there are a lot of shared code that I shouldn't duplicate.
+Abstract class - there is also a normal collision strategy (and it can be the collision strategy of a brick)
+so I have to hold this type of object.
+
+DoubleStrategy as a class that inheritance from CollisionStrategy -
+I chose to make Double Strategy to heirs from Collision Strategy because it's a type of collision strategy,
+the break will break but there will be more functionality, in this case a double functionality.
+
+CollisionStrategyFactory as an independent class -
+I chose to make it as a independent class because I have to have an object of this type and no classes from
+the game need to be in charge of creating collision strategies.
+
+FallingHeart, CollisionCounter and SecondaryPaddle as independent classes that heirs from GameObject -
+I chose to create them this way because each of them is an object in itself that doesn't depends on other
+classes.
+
+=============================
+=    Answers to questions   =
+=============================
+
+1) Described above.
+
+2) Described above.
+
+3) In the DoubleStrategy I deal with the limit of maximum 3 power ups. I randomize there collision strategies
+and make a limit of 3 power ups. (Checks which collision strategy was randomized and accordingly know what
+are the next available options). The limit will be the maximum size of the array that holds the collision
+strategies.
+
+4) I chose to create the double strategy as a type of normal collision because it is a type of a strategy.
+The double strategy holds an array that hold the randomized collisions strategies that was randomized and
+on collision it operate all the strategies.
+It creates the strategies in an iterative way, every step it will randomize the amount that is needed.
+My solution for a higher bound for the power ups is only to change the constant - DoubleStrategy.MAX_POWERUP
+to the new bound.
+
+=============================
+=       Changes in API      =
+=============================
+
+I've change a thing in the API of Ex3.1 -
+Ball - added a method that returns the the amount of collisions that the ball had.
+there is counter in the ball that counts the collisions.
+The function signature is - public int getBallCollisions()
